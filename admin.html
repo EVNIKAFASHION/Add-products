@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EVNIKA Admin — Product Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --cream:   #F5F0E8;
+      --accent:  #C9A96E;
+      --dark:    #1A1A1A;
+      --muted:   #8B8475;
+      --success: #5a9e6f;
+      --danger:  #c0392b;
+      --card-bg: #fff;
+      --border:  rgba(201,169,110,0.25);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--dark);
+      color: #f0ede6;
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid var(--accent);
+    }
+    header .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    header .badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #b0a898;
+    }
+    header a {
+      color: #b0a898;
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    header a:hover { color: var(--accent); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+
+    /* ── Setup Banner ── */
+    #setup-banner {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-left: 4px solid #ffc107;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    #setup-banner strong { color: var(--dark); }
+    #setup-banner code {
+      background: rgba(0,0,0,0.06);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 0.82rem;
+    }
+    #setup-banner .step { margin-top: 8px; }
+
+    /* ── API URL input row ── */
+    .api-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .api-row input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-family: monospace;
+      background: #fff;
+      color: var(--dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .api-row input:focus { border-color: var(--accent); }
+    .api-row button {
+      padding: 10px 20px;
+      background: var(--dark);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .api-row button:hover { background: var(--accent); }
+
+    /* ── Section titles ── */
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 400;
+      margin-bottom: 24px;
+      line-height: 1.1;
+    }
+
+    /* ── Form card ── */
+    .form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 48px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 640px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--dark);
+      background: #faf8f5;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+      background: #fff;
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+
+    /* images list */
+    .images-list { display: flex; flex-direction: column; gap: 8px; }
+    .img-row {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .img-row input[type="url"] { flex: 1; }
+    .img-row input[type="file"] {
+      flex: 0 0 220px;
+      font-size: 0.75rem;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    .img-row .img-source-note {
+      flex: 0 0 auto;
+      font-size: 0.68rem;
+      color: var(--muted);
+      max-width: 170px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .img-preview {
+      flex: 0 0 56px;
+      width: 56px;
+      height: 56px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #f5f1e9;
+      object-fit: cover;
+      display: none;
+    }
+    .img-preview.show { display: block; }
+    .img-row button {
+      width: 32px; height: 32px;
+      border: 1px solid #e0d8cc;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--danger);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .img-row button:hover { background: #fde8e8; }
+    .add-img-btn {
+      align-self: flex-start;
+      margin-top: 4px;
+      padding: 6px 14px;
+      background: transparent;
+      border: 1px dashed var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .add-img-btn:hover { background: rgba(201,169,110,0.08); }
+
+    /* submit button */
+    .submit-row {
+      margin-top: 28px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn-submit {
+      padding: 12px 36px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-submit:hover { background: #b8935a; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,169,110,0.3); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-reset {
+      padding: 12px 24px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover { border-color: var(--muted); color: var(--dark); }
+
+    /* status message */
+    #form-status {
+      font-size: 0.82rem;
+      padding: 8px 16px;
+      border-radius: 4px;
+      display: none;
+    }
+    #form-status.ok    { background: #e8f5ee; color: var(--success); border: 1px solid #b8dfc8; }
+    #form-status.error { background: #fdeaea; color: var(--danger);  border: 1px solid #f5c0c0; }
+
+    /* ── Products table ── */
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-refresh {
+      padding: 8px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    thead th {
+      background: var(--dark);
+      color: #f0ede6;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 500;
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #faf8f4; }
+    tbody td {
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: var(--dark);
+      vertical-align: middle;
+    }
+    td.name { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; max-width: 220px; }
+    td.price { font-weight: 600; white-space: nowrap; }
+    td.category span {
+      background: rgba(201,169,110,0.15);
+      color: #8a6b35;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    td.actions { white-space: nowrap; }
+    .btn-delete {
+      padding: 5px 12px;
+      background: transparent;
+      border: 1px solid #f5c0c0;
+      color: var(--danger);
+      border-radius: 4px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-delete:hover { background: var(--danger); color: #fff; }
+    .source-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 20px;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .source-badge.sheet { background: #e8f5ee; color: #3a7a52; }
+    .source-badge.hardcoded { background: #f0ede6; color: #8b7355; }
+
+    /* empty/loading state */
+    .table-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--dark);
+      color: #f0ede6;
+      padding: 12px 20px;
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      font-size: 0.82rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      transform: translateY(60px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+      max-width: 340px;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:baseline;gap:12px;">
+    <span class="logo">EVNIKA</span>
+    <span class="badge">Admin Panel</span>
+  </div>
+  <a href="index.html">← View Shop</a>
+</header>
+
+<div class="container">
+
+  <!-- SETUP INSTRUCTIONS -->
+  <div id="setup-banner">
+    <strong>⚙️ One-time setup required:</strong>
+    <div class="step">1. Open <strong>Google Sheets</strong> → create a new spreadsheet → go to <strong>Extensions → Apps Script</strong>.</div>
+    <div class="step">2. Delete any existing code and paste the contents of <code>Code.gs</code> (included in your download).</div>
+    <div class="step">3. Click <strong>Deploy → New Deployment → Web App</strong>. Set <em>Execute as: Me</em> and <em>Who has access: Anyone</em>. Click Deploy and copy the URL.</div>
+    <div class="step">4. Paste that URL below and click <strong>Save URL</strong>. You only need to do this once — it's saved in your browser.</div>
+    <div class="step" style="margin-top:12px;">5. In <code>index.html</code>, find the line <code>// APPS_SCRIPT_URL_PLACEHOLDER</code> and replace <code>""</code> with your deployment URL (see the snippet in your download).</div>
+  </div>
+
+  <!-- API URL -->
+  <div class="api-row">
+    <input type="url" id="api-url" placeholder="Paste your Apps Script Web App URL here…" />
+    <button onclick="saveApiUrl()">Save URL</button>
+  </div>
+
+  <!-- ADD PRODUCT FORM -->
+  <p class="section-label">Products</p>
+  <h2 class="section-title">Add New Product</h2>
+
+  <div class="form-card">
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <label>Product Name *</label>
+        <input type="text" id="f-name" placeholder="e.g. Kanjivaram Silk Saree — Deep Crimson" />
+      </div>
+
+      <div class="form-group">
+        <label>Sale Price (₹) *</label>
+        <input type="number" id="f-price" min="1" placeholder="e.g. 1950" />
+      </div>
+
+      <div class="form-group">
+        <label>Original / MRP (₹) *</label>
+        <input type="number" id="f-original" min="1" placeholder="e.g. 3499" />
+      </div>
+
+      <div class="form-group">
+        <label>Category *</label>
+        <select id="f-category">
+          <option value="sarees">Sarees</option>
+          <option value="kurtis">Kurtis</option>
+          <option value="lehengas">Lehengas</option>
+          <option value="accessories">Accessories</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Badge (optional)</label>
+        <input type="text" id="f-badge" placeholder="e.g. New, Sale, Bestseller" value="New" />
+      </div>
+
+      <div class="form-group full">
+        <label>Description *</label>
+        <textarea id="f-desc" placeholder="Describe the product — fabric, weave, occasion suitability…"></textarea>
+      </div>
+
+      <div class="form-group full">
+        <label>Product Images * (URL or Upload file, add multiple rows)</label>
+        <div class="images-list" id="images-list">
+          <div class="img-row">
+            <input type="url" placeholder="https://raw.githubusercontent.com/EVNIKAFASHION/EVNIKA/main/img12.jpg" oninput="clearUploadedImage(this)" />
+            <input type="file" accept="image/*" onchange="onImageFileSelected(this)" />
+            <img class="img-preview" alt="Preview" />
+            <span class="img-source-note"></span>
+            <button onclick="removeImgRow(this)" title="Remove">×</button>
+          </div>
+        </div>
+        <button class="add-img-btn" onclick="addImgRow()">+ Add another image</button>
+        <p style="font-size:0.72rem;color:var(--muted);margin-top:8px;">
+          💡 Use either an image URL or pick a local file in each row. You can add many rows for one product.
+          <br />
+          For best performance, hosted URLs are recommended. If needed, upload images to your GitHub repo and use the raw URL:
+          <code style="background:#f0ece4;padding:2px 5px;border-radius:3px;font-size:0.72rem;">https://raw.githubusercontent.com/EVNIKAFASHION/EVNIKA/main/YOUR_IMAGE.jpg</code>
+        </p>
+      </div>
+
+    </div>
+
+    <div class="submit-row">
+      <button class="btn-submit" id="submit-btn" onclick="submitProduct()">Add Product to Shop</button>
+      <button class="btn-reset" onclick="resetForm()">Clear Form</button>
+      <span id="form-status"></span>
+    </div>
+  </div>
+
+  <!-- PRODUCTS LIST -->
+  <div class="products-header">
+    <div>
+      <p class="section-label">Current Inventory</p>
+      <h2 class="section-title" style="margin-bottom:0;">Sheet Products</h2>
+    </div>
+    <button class="btn-refresh" onclick="loadProducts()">↻ Refresh</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Category</th>
+          <th>Images</th>
+          <th>Source</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="products-tbody">
+        <tr><td colspan="7" class="table-state">Save your Apps Script URL above, then products will appear here.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+  // ── API URL management ───────────────────────────────────
+  const API_KEY = "evnika_apps_script_url";
+  const DEFAULT_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq3qvvpkd_3NNDq8fP9RyCac273o7KYz7DcLoF4UnU46lt0q39W4DA9Dp0yG9G5YNJ/exec";
+
+  function getApiUrl() {
+    return localStorage.getItem(API_KEY) || DEFAULT_APPS_SCRIPT_URL;
+  }
+
+  function saveApiUrl() {
+    const url = document.getElementById("api-url").value.trim();
+    if (!url) { showToast("Please paste your Apps Script URL first."); return; }
+    localStorage.setItem(API_KEY, url);
+    showToast("✓ URL saved! Loading products…");
+    loadProducts();
+  }
+
+  // Pre-fill if saved
+  window.addEventListener("DOMContentLoaded", () => {
+    const saved = getApiUrl();
+    document.getElementById("api-url").value = saved;
+    loadProducts();
+  });
+
+  // ── Image rows ────────────────────────────────────────────
+  function addImgRow() {
+    const list = document.getElementById("images-list");
+    const row = document.createElement("div");
+    row.className = "img-row";
+    row.innerHTML = `<input type="url" placeholder="https://raw.githubusercontent.com/…" oninput="clearUploadedImage(this)" />
+      <input type="file" accept="image/*" onchange="onImageFileSelected(this)" />
+      <img class="img-preview" alt="Preview" />
+      <span class="img-source-note"></span>
+      <button onclick="removeImgRow(this)" title="Remove">×</button>`;
+    list.appendChild(row);
+    row.querySelector("input[type='url']").focus();
+  }
+
+  function removeImgRow(btn) {
+    const list = document.getElementById("images-list");
+    if (list.children.length === 1) { showToast("At least one image is required."); return; }
+    btn.closest(".img-row").remove();
+  }
+
+  function clearUploadedImage(urlInput) {
+    const row = urlInput.closest(".img-row");
+    const note = row.querySelector(".img-source-note");
+    const fileInput = row.querySelector("input[type='file']");
+    const preview = row.querySelector(".img-preview");
+    const url = urlInput.value.trim();
+    if (!url) {
+      if (preview) {
+        preview.src = "";
+        preview.classList.remove("show");
+      }
+      return;
+    }
+    delete urlInput.dataset.fileData;
+    if (fileInput) fileInput.value = "";
+    if (note) note.textContent = "From URL";
+    setPreviewFromSrc(row, url);
+  }
+
+  function onImageFileSelected(fileInput) {
+    const file = fileInput.files && fileInput.files[0];
+    const row = fileInput.closest(".img-row");
+    const urlInput = row.querySelector("input[type='url']");
+    const note = row.querySelector(".img-source-note");
+    if (!file) {
+      delete urlInput.dataset.fileData;
+      setPreviewFromSrc(row, "");
+      if (note) note.textContent = "";
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      urlInput.value = "";
+      urlInput.dataset.fileData = String(reader.result || "");
+      setPreviewFromSrc(row, urlInput.dataset.fileData);
+      if (note) note.textContent = `Uploaded: ${file.name}`;
+    };
+    reader.onerror = () => {
+      delete urlInput.dataset.fileData;
+      setPreviewFromSrc(row, "");
+      if (note) note.textContent = "";
+      showToast("Could not read selected file.");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function setPreviewFromSrc(row, src) {
+    const preview = row.querySelector(".img-preview");
+    const note = row.querySelector(".img-source-note");
+    if (!preview) return;
+    if (!src) {
+      preview.src = "";
+      preview.classList.remove("show");
+      return;
+    }
+    preview.onload = () => preview.classList.add("show");
+    preview.onerror = () => {
+      preview.src = "";
+      preview.classList.remove("show");
+      if (note && !note.textContent) note.textContent = "Invalid image";
+    };
+    preview.src = src;
+  }
+
+  function getImageUrls() {
+    return Array.from(document.querySelectorAll("#images-list .img-row"))
+      .map((row) => {
+        const urlInput = row.querySelector("input[type='url']");
+        const typedUrl = urlInput.value.trim();
+        const uploaded = (urlInput.dataset.fileData || "").trim();
+        return typedUrl || uploaded;
+      })
+      .filter(Boolean);
+  }
+
+  // ── Form submit ───────────────────────────────────────────
+  async function submitProduct() {
+    const apiUrl = getApiUrl();
+    if (!apiUrl) { showStatus("error", "Please save your Apps Script URL first."); return; }
+
+    const name     = document.getElementById("f-name").value.trim();
+    const price    = Number(document.getElementById("f-price").value);
+    const original = Number(document.getElementById("f-original").value);
+    const category = document.getElementById("f-category").value;
+    const desc     = document.getElementById("f-desc").value.trim();
+    const badge    = document.getElementById("f-badge").value.trim();
+    const images   = getImageUrls();
+
+    if (!name)           { showStatus("error", "Product name is required."); return; }
+    if (!price || price < 1) { showStatus("error", "Enter a valid sale price."); return; }
+    if (!original || original < price) { showStatus("error", "Original price must be ≥ sale price."); return; }
+    if (!desc)           { showStatus("error", "Description is required."); return; }
+    if (!images.length)  { showStatus("error", "Add at least one image URL or upload at least one image."); return; }
+
+    const btn = document.getElementById("submit-btn");
+    btn.disabled = true;
+    btn.textContent = "Adding…";
+    showStatus("", "");
+
+    try {
+      const resp = await fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "add", name, brand: "EVNIKA", price, originalPrice: original, category, desc, images, badge })
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        showStatus("ok", `✓ Product added successfully (ID: ${data.id})`);
+        showToast("Product live on your shop!");
+        resetForm();
+        loadProducts();
+      } else {
+        showStatus("error", "Error: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      showStatus("error", "Network error — check your Apps Script URL and CORS settings.");
+    }
+
+    btn.disabled = false;
+    btn.textContent = "Add Product to Shop";
+  }
+
+  function resetForm() {
+    ["f-name","f-price","f-original","f-desc"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("f-badge").value = "New";
+    document.getElementById("f-category").value = "sarees";
+    const list = document.getElementById("images-list");
+    list.innerHTML = `<div class="img-row">
+      <input type="url" placeholder="https://raw.githubusercontent.com/EVNIKAFASHION/EVNIKA/main/img12.jpg" oninput="clearUploadedImage(this)" />
+      <input type="file" accept="image/*" onchange="onImageFileSelected(this)" />
+      <img class="img-preview" alt="Preview" />
+      <span class="img-source-note"></span>
+      <button onclick="removeImgRow(this)" title="Remove">×</button>
+    </div>`;
+    showStatus("", "");
+  }
+
+  // ── Load products from sheet ──────────────────────────────
+  async function loadProducts() {
+    const apiUrl = getApiUrl();
+    if (!apiUrl) return;
+
+    const tbody = document.getElementById("products-tbody");
+    tbody.innerHTML = `<tr><td colspan="7" class="table-state">Loading…</td></tr>`;
+
+    try {
+      const resp = await fetch(apiUrl);
+      const data = await resp.json();
+      if (!data.ok) throw new Error(data.error);
+
+      const products = data.products;
+      if (!products.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="table-state">No sheet products yet. Add one above!</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td class="name">${escHtml(p.name)}</td>
+          <td class="price">₹${p.price.toLocaleString("en-IN")} <span style="color:#aaa;font-size:0.7rem;text-decoration:line-through;">₹${p.originalPrice.toLocaleString("en-IN")}</span></td>
+          <td class="category"><span>${p.category}</span></td>
+          <td style="font-size:0.72rem;color:var(--muted);">${p.images.length} image${p.images.length !== 1 ? 's' : ''}</td>
+          <td><span class="source-badge sheet">Sheet</span></td>
+          <td class="actions">
+            <button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button>
+          </td>
+        </tr>
+      `).join("");
+
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="7" class="table-state" style="color:var(--danger);">Error loading products: ${err.message}</td></tr>`;
+    }
+  }
+
+  async function deleteProduct(id) {
+    if (!confirm(`Delete product #${id}? This cannot be undone.`)) return;
+    const apiUrl = getApiUrl();
+    try {
+      const resp = await fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify({ action: "delete", id })
+      });
+      const data = await resp.json();
+      if (data.ok) { showToast("Product deleted."); loadProducts(); }
+      else showToast("Error: " + data.error);
+    } catch (err) {
+      showToast("Network error.");
+    }
+  }
+
+  // ── Helpers ───────────────────────────────────────────────
+  function showStatus(type, msg) {
+    const el = document.getElementById("form-status");
+    el.className = type;
+    el.textContent = msg;
+    el.style.display = msg ? "inline-block" : "none";
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 3500);
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+</script>
+</body>
+</html>
